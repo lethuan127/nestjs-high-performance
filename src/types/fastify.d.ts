@@ -1,10 +1,5 @@
-interface AuthUser {
-  sub: string;
-  fullname: string;
-  username: string;
-  email: string;
-  phone: string;
-}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { FastifyRequest } from 'fastify';
 
 declare module 'fastify' {
   interface FastifyRequest {

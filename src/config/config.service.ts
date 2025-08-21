@@ -1,10 +1,11 @@
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
-import { CleanedEnv, bool, cleanEnv, num, str } from 'envalid';
+import { CleanedEnv, bool, cleanEnv, num, str, url } from 'envalid';
 
 config();
 
 const envSchema = {
+  APP_ENV: str({ default: 'development' }),
   NODE_ENV: str({ default: 'development' }),
   PORT: num({ default: 3000 }),
 
@@ -20,6 +21,9 @@ const envSchema = {
 
   JWT_SECRET: str(),
   JWT_EXPIRES_IN: str(),
+
+  OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: url({ default: '' }),
+  OTEL_EXPORTER_OTLP_GRPC_ENDPOINT: url({ default: '' }),
 } as const;
 
 type Env = CleanedEnv<typeof envSchema>;

@@ -3,14 +3,18 @@ import { ValidationPipe } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
-import * as fastifyCors from '@fastify/cors';
 
 // Load environment variables
 dotenv.config();
 
 async function bootstrap(): Promise<void> {
   try {
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
+      cors: {
+        origin: true,
+        credentials: true,
+      },
+    });
 
     // Enable global validation
     app.useGlobalPipes(
@@ -20,11 +24,6 @@ async function bootstrap(): Promise<void> {
         transform: true,
       }),
     );
-
-    await app.register(fastifyCors, {
-      origin: true,
-      credentials: true,
-    });
 
     const port = parseInt(process.env.PORT ?? '3000', 10);
     await app.listen({
