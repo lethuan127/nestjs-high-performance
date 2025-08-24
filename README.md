@@ -346,15 +346,7 @@ docker network inspect cake-system_cake-network
 
 ## 📈 Performance Benchmarks
 
-Based on k6 load testing results:
-
-| Metric | Target | Achieved |
-|--------|--------|----------|
-| Concurrent Users | 100,000 | ✅ 100,000+ |
-| Login P95 | < 1000ms | ✅ ~800ms |
-| Registration P95 | < 2000ms | ✅ ~1500ms |
-| Error Rate | < 5% | ✅ < 1% |
-| Throughput | > 1000 RPS | ✅ 10,000+ RPS |
+TODO
 
 ## 🤝 Contributing
 
