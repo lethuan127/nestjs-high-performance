@@ -80,6 +80,7 @@ if (!OTEL_EXPORTER_OTLP_HTTP_ENDPOINT && !OTEL_EXPORTER_OTLP_GRPC_ENDPOINT) {
             span.updateName(`HTTP ${request.method.toUpperCase()} ${request.protocol}://${request.host}${request.path}`);
           }
           if (request instanceof IncomingMessage) {
+            span.updateName(`${request.method?.toUpperCase()} ${request.url}`);
             if ((request as unknown as FastifyRequest).user?.sub) {
               span.setAttribute('user.id', (request as unknown as FastifyRequest).user?.sub as string);
               span.setAttribute('user.fullname', (request as unknown as FastifyRequest).user?.fullname as string);
