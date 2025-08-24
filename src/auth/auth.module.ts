@@ -8,6 +8,7 @@ import { User } from './user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from './user.service';
+import { EventsModule } from '../events/events.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserService } from './user.service';
       }),
       inject: [ConfigService],
     }),
+    EventsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, UserService],

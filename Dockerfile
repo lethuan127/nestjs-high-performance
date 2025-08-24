@@ -10,6 +10,13 @@ WORKDIR /app
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
+# Development stage (for testing)
+FROM base AS development
+RUN pnpm install --frozen-lockfile
+COPY . .
+EXPOSE 3000
+CMD ["pnpm", "run", "start:dev"]
+
 # Build stage
 FROM base AS build
 RUN pnpm install --frozen-lockfile

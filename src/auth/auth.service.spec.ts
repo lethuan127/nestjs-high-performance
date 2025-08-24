@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -10,6 +13,7 @@ import { AuthService } from './auth.service';
 import { User } from './user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { EventsService } from '../events/events.service';
 
 // Mock bcrypt
 jest.mock('bcrypt');
@@ -19,6 +23,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let userRepository: any;
   let jwtService: any;
+  let eventsService: any;
 
   const mockUser: User = {
     id: '1',
@@ -59,6 +64,10 @@ describe('AuthService', () => {
       sign: jest.fn(),
     };
 
+    const mockEventsService = {
+      publishUserFirstLogin: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -70,12 +79,17 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: mockJwtService,
         },
+        {
+          provide: EventsService,
+          useValue: mockEventsService,
+        },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
     userRepository = module.get(getRepositoryToken(User));
     jwtService = module.get(JwtService);
+    eventsService = module.get(EventsService);
 
     // Clear all mocks before each test
     jest.clearAllMocks();
@@ -184,7 +198,7 @@ describe('AuthService', () => {
       // Assert
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: [{ email: 'johndoe' }, { username: 'johndoe' }, { phone: 'johndoe' }],
-        select: ['id', 'fullname', 'email', 'username', 'phone', 'password'],
+        select: ['id', 'fullname', 'email', 'username', 'phone', 'password', 'latestLogin'],
       });
       expect(mockedBcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword123');
       expect(userRepository.update).toHaveBeenCalledWith(mockUser.id, {
@@ -242,7 +256,7 @@ describe('AuthService', () => {
       expect(result).toEqual(mockUser);
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: [{ email: 'johndoe' }, { username: 'johndoe' }, { phone: 'johndoe' }],
-        select: ['id', 'fullname', 'email', 'username', 'phone', 'password'],
+        select: ['id', 'fullname', 'email', 'username', 'phone', 'password', 'latestLogin'],
       });
       expect(mockedBcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword123');
     });

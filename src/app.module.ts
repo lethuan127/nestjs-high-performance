@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { PromotionsModule } from './promotions/promotions.module';
+import { EventsModule } from './events/events.module';
 import dataSource from './config/typeorm.config';
 import configService from './config/config.service';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -11,6 +13,7 @@ import { DataSource } from 'typeorm';
 import LoggerMiddleware from './common/logger.middleware';
 import KeyvRedis from '@keyv/redis';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -28,6 +31,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         },
       ],
     }),
+    EventEmitterModule.forRoot(),
     TypeOrmModule.forRootAsync({
       useFactory: () => dataSource.options,
       dataSourceFactory: async (options) => {
@@ -45,7 +49,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
       },
       inject: [ConfigService],
     }),
+    EventsModule,
     AuthModule,
+    PromotionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

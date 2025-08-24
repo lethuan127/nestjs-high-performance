@@ -1,0 +1,72 @@
+services:
+  test-postgres:
+    image: postgres:15-alpine
+    container_name: cake-test-postgres
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: cake_system_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - test_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d cake_system_test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  test-redis:
+    image: redis:7-alpine
+    container_name: cake-test-redis
+    ports:
+      - "6380:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - test_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  test-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: cake-test-app
+    environment:
+      NODE_ENV: test
+      POSTGRES_HOST: test-postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DATABASE: cake_system_test
+      POSTGRES_SSL: false
+      REDIS_URL: redis://test-redis:6379/1
+      JWT_SECRET: test-jwt-secret-key-for-e2e-testing
+      JWT_EXPIRATION_TIME: 1h
+      LOG_LEVEL: error
+    depends_on:
+      test-postgres:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: ["sh", "-c", "pnpm run migration:run && pnpm run test:e2e"]
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
+
+volumes:
+  test_postgres_data:
+    driver: local
+  test_redis_data:
+    driver: local

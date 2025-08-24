@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -7,13 +7,18 @@ import { User } from './user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { EventsService } from '../events/events.service';
+import { EventJobs, UserFirstLoginEvent } from '../events/events.interface';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private eventsService: EventsService,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
@@ -61,7 +66,7 @@ export class AuthService {
       username,
       password: hashedPassword,
       birthday: new Date(birthday),
-      latestLogin: new Date(),
+      latestLogin: undefined,
     });
 
     const savedUser = await this.userRepository.save(user);
@@ -96,7 +101,24 @@ export class AuthService {
     }
 
     const now = new Date();
+    const isFirstLogin = user.latestLogin === null;
+
+    // Update user's latest login
     await this.userRepository.update(user.id, { latestLogin: now });
+
+    // If this is the user's first login, publish an event
+    if (isFirstLogin) {
+      const firstLoginEvent: UserFirstLoginEvent = {
+        userId: user.id,
+        fullname: user.fullname,
+        email: user.email,
+        username: user.username,
+        phone: user.phone,
+        loginTimestamp: now,
+      };
+
+      await this.eventsService.publishUserEventAsync(EventJobs.USER_FIRST_LOGIN, firstLoginEvent);
+    }
 
     const access_token = this.generateAccessToken({
       sub: user.id,
@@ -124,7 +146,7 @@ export class AuthService {
     // Find user by email, username, or phone
     const user = await this.userRepository.findOne({
       where: [{ email: account }, { username: account }, { phone: account }],
-      select: ['id', 'fullname', 'email', 'username', 'phone', 'password'],
+      select: ['id', 'fullname', 'email', 'username', 'phone', 'password', 'latestLogin'],
     });
 
     if (user && (await bcrypt.compare(password, user.password))) {
