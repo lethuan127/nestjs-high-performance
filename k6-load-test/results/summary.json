@@ -1,0 +1,330 @@
+{
+    "root_group": {
+        "groups": {
+            "User Login Flow": {
+                "name": "User Login Flow",
+                "path": "::User Login Flow",
+                "id": "51a23313a0a6b7ac8ab023edef52bcdd",
+                "groups": {
+                    "Token Refresh Flow": {
+                        "name": "Token Refresh Flow",
+                        "path": "::User Login Flow::Token Refresh Flow",
+                        "id": "063265516ba0e6618c09bab1ebb2cc34",
+                        "groups": {},
+                        "checks": {
+                                "refresh status is 200": {
+                                    "name": "refresh status is 200",
+                                    "path": "::User Login Flow::Token Refresh Flow::refresh status is 200",
+                                    "id": "0d2f0e588ede655a9f20b50f1967a76c",
+                                    "passes": 16,
+                                    "fails": 0
+                                },
+                                "refresh response has new token": {
+                                    "id": "54396096e4702ad4be9047858ca57fa9",
+                                    "passes": 16,
+                                    "fails": 0,
+                                    "name": "refresh response has new token",
+                                    "path": "::User Login Flow::Token Refresh Flow::refresh response has new token"
+                                },
+                                "refresh response time < 200ms": {
+                                    "name": "refresh response time < 200ms",
+                                    "path": "::User Login Flow::Token Refresh Flow::refresh response time < 200ms",
+                                    "id": "7f1ba6c615d2ecfefce3e5ae1dfc593b",
+                                    "passes": 16,
+                                    "fails": 0
+                                }
+                            }
+                    }
+                },
+                "checks": {
+                    "login status is 200": {
+                        "fails": 0,
+                        "name": "login status is 200",
+                        "path": "::User Login Flow::login status is 200",
+                        "id": "12670fa7324cbb113d0f451771653f1d",
+                        "passes": 69
+                    },
+                    "login response has token": {
+                        "path": "::User Login Flow::login response has token",
+                        "id": "96cbe1257926f0d3eb1377fcf061df15",
+                        "passes": 69,
+                        "fails": 0,
+                        "name": "login response has token"
+                    },
+                    "login response time < 200ms": {
+                        "name": "login response time < 200ms",
+                        "path": "::User Login Flow::login response time < 200ms",
+                        "id": "e88900f4c26aa5309057843f39f85ad4",
+                        "passes": 69,
+                        "fails": 0
+                    }
+                }
+            },
+            "User Registration Flow": {
+                "path": "::User Registration Flow",
+                "id": "b2ba97c891b01ff5f338dc41c341c855",
+                "groups": {},
+                "checks": {
+                        "registration status is 201": {
+                            "passes": 31,
+                            "fails": 0,
+                            "name": "registration status is 201",
+                            "path": "::User Registration Flow::registration status is 201",
+                            "id": "4c5aab2df9c0c04ca127b32cef0118ef"
+                        },
+                        "registration response has token": {
+                            "name": "registration response has token",
+                            "path": "::User Registration Flow::registration response has token",
+                            "id": "585d23b55d32f98b794b4f048b3d9c11",
+                            "passes": 31,
+                            "fails": 0
+                        },
+                        "registration response has user data": {
+                            "path": "::User Registration Flow::registration response has user data",
+                            "id": "d7fd6e6df84d6541e285405237c53c24",
+                            "passes": 31,
+                            "fails": 0,
+                            "name": "registration response has user data"
+                        },
+                        "registration response time < 300ms": {
+                            "path": "::User Registration Flow::registration response time < 300ms",
+                            "id": "f8af4002447dbe0d75536d1f93fec1d5",
+                            "passes": 31,
+                            "fails": 0,
+                            "name": "registration response time < 300ms"
+                        }
+                    },
+                "name": "User Registration Flow"
+            },
+            "Profile Access Flow": {
+                "groups": {},
+                "checks": {
+                        "profile status is 200": {
+                            "name": "profile status is 200",
+                            "path": "::Profile Access Flow::profile status is 200",
+                            "id": "c6e3efb008af9be1fcf89cadeab1775a",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "profile response has user data": {
+                            "path": "::Profile Access Flow::profile response has user data",
+                            "id": "b67d6ee8f3b868dd81803129c2916c3b",
+                            "passes": 4,
+                            "fails": 0,
+                            "name": "profile response has user data"
+                        },
+                        "profile response time < 500ms": {
+                            "passes": 4,
+                            "fails": 0,
+                            "name": "profile response time < 500ms",
+                            "path": "::Profile Access Flow::profile response time < 500ms",
+                            "id": "88bac5b0b1622efc96447dd718861c62"
+                        }
+                    },
+                "name": "Profile Access Flow",
+                "path": "::Profile Access Flow",
+                "id": "5e57a92891ad05ed23402f79cd8a2f28"
+            }
+        },
+        "checks": {},
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "metrics": {
+        "token_generation_time": {
+            "p(95)": 142.19999999999996,
+            "avg": 87.3623188405797,
+            "min": 65,
+            "med": 81,
+            "max": 173,
+            "p(90)": 120.2
+        },
+        "iterations": {
+            "count": 104,
+            "rate": 3.1698609619735554
+        },
+        "http_req_blocked": {
+            "avg": 0.09285950413223135,
+            "min": 0.003,
+            "med": 0.009,
+            "max": 1.238,
+            "p(90)": 0.027,
+            "p(95)": 0.869
+        },
+        "http_req_sending": {
+            "avg": 0.053743801652892546,
+            "min": 0.009,
+            "med": 0.036,
+            "max": 0.422,
+            "p(90)": 0.111,
+            "p(95)": 0.162
+        },
+        "http_req_duration{endpoint:login}": {
+            "p(95)": 141.22999999999996,
+            "avg": 86.86217391304345,
+            "min": 64.713,
+            "med": 80.662,
+            "max": 171.583,
+            "p(90)": 119.7226,
+            "thresholds": {
+                "p(95)<1000": false
+            }
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 72.28332231404958,
+            "min": 2.929,
+            "med": 73.694,
+            "max": 174.429,
+            "p(90)": 98.826,
+            "p(95)": 134.249
+        },
+        "checks": {
+            "passes": 391,
+            "fails": 0,
+            "value": 1
+        },
+        "login_attempts": {
+            "rate": 2.103080830540147,
+            "count": 69
+        },
+        "data_sent": {
+            "count": 35885,
+            "rate": 1093.7544290425099
+        },
+        "http_req_duration{endpoint:profile}": {
+            "avg": 3.9457499999999994,
+            "min": 3.45,
+            "med": 3.925,
+            "max": 4.483,
+            "p(90)": 4.3906,
+            "p(95)": 4.4368,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "http_req_duration{endpoint:register}": {
+            "avg": 86.15032258064512,
+            "min": 66.046,
+            "med": 79.049,
+            "max": 174.429,
+            "p(90)": 97.794,
+            "p(95)": 122.83349999999994,
+            "thresholds": {
+                "p(95)<2000": false
+            }
+        },
+        "http_reqs": {
+            "count": 121,
+            "rate": 3.688011311526925,
+            "thresholds": {
+                "rate>1000": true
+            }
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 10,
+            "thresholds": {
+                "value<=100000": false
+            }
+        },
+        "http_req_waiting": {
+            "avg": 72.12528925619836,
+            "min": 2.869,
+            "med": 73.628,
+            "max": 174.379,
+            "p(90)": 98.671,
+            "p(95)": 134.153
+        },
+        "iteration_duration": {
+            "p(90)": 4628.093483,
+            "p(95)": 4690.5153098499995,
+            "avg": 2970.8007071346155,
+            "min": 1033.924584,
+            "med": 2893.7004165,
+            "max": 4892.690166
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 121,
+            "thresholds": {
+                "rate<0.05": false
+            },
+            "value": 0
+        },
+        "http_req_connecting": {
+            "avg": 0.07678512396694215,
+            "min": 0,
+            "med": 0,
+            "max": 1.207,
+            "p(90)": 0,
+            "p(95)": 0.852
+        },
+        "auth_success_rate": {
+            "passes": 100,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_duration": {
+            "min": 2.929,
+            "med": 73.694,
+            "max": 174.429,
+            "p(90)": 98.826,
+            "p(95)": 134.249,
+            "avg": 72.28332231404958,
+            "thresholds": {
+                "p(50)<500": false,
+                "p(95)<2000": false,
+                "p(99)<5000": false
+            }
+        },
+        "data_received": {
+            "count": 101264,
+            "rate": 3086.4692351277895
+        },
+        "vus_max": {
+            "min": 10,
+            "max": 10,
+            "value": 10,
+            "thresholds": {
+                "value<=100000": false
+            }
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "registration_attempts": {
+            "count": 31,
+            "rate": 0.9448624021267329
+        },
+        "profile_requests": {
+            "rate": 0.1219177293066752,
+            "count": 4
+        },
+        "http_req_receiving": {
+            "p(95)": 0.194,
+            "avg": 0.10428925619834711,
+            "min": 0.022,
+            "med": 0.074,
+            "max": 1.57,
+            "p(90)": 0.128
+        },
+        "group_duration": {
+            "avg": 73.94479648333336,
+            "min": 3.164291,
+            "med": 75.2159795,
+            "max": 176.817625,
+            "p(90)": 100.3010253,
+            "p(95)": 135.15465804999994
+        }
+    },
+    "setup_data": {
+        "baseUrl": "http://localhost:3000"
+    }
+}

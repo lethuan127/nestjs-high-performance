@@ -1,0 +1,159 @@
+version: '3.8'
+
+services:
+  # Database User Seeder Service
+  db-seeder:
+    image: node:18-alpine
+    container_name: k6-db-seeder
+    profiles:
+      - seeder
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@host.docker.internal:5432/cake_system
+    command: >
+      sh -c "
+      npm install pg bcrypt &&
+      node seed-users.js
+      "
+    networks:
+      - k6-network
+
+  # k6 Load Testing Service
+  k6:
+    image: grafana/k6:latest
+    container_name: k6-load-test
+    volumes:
+      - ./:/scripts
+      - ./results:/results
+    environment:
+      - BASE_URL=http://host.docker.internal:3000
+      - ENVIRONMENT=docker
+      - K6_WEB_DASHBOARD=true
+      - K6_WEB_DASHBOARD_EXPORT=results/dashboard-report.html
+    command: >
+      run 
+      --out json=results/load-test-results.json
+      --out csv=results/load-test-results.csv
+      --summary-export=results/summary.json
+      /scripts/main.js
+    depends_on:
+      - influxdb
+      - grafana
+    networks:
+      - k6-network
+
+  # InfluxDB for metrics storage
+  influxdb:
+    image: influxdb:2.7
+    container_name: k6-influxdb
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=k6
+      - DOCKER_INFLUXDB_INIT_PASSWORD=k6-password
+      - DOCKER_INFLUXDB_INIT_ORG=k6-org
+      - DOCKER_INFLUXDB_INIT_BUCKET=k6-bucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=k6-admin-token
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    networks:
+      - k6-network
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: k6-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-influxdb-datasource
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - influxdb
+    networks:
+      - k6-network
+
+  # Prometheus for additional metrics (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: k6-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - k6-network
+
+  # k6 with InfluxDB output
+  k6-influxdb:
+    image: grafana/k6:latest
+    container_name: k6-influxdb-test
+    profiles:
+      - influxdb-output
+    volumes:
+      - ./:/scripts
+      - ./results:/results
+    environment:
+      - BASE_URL=http://host.docker.internal:3000
+      - ENVIRONMENT=docker
+      - K6_INFLUXDB_ORGANIZATION=k6-org
+      - K6_INFLUXDB_BUCKET=k6-bucket
+      - K6_INFLUXDB_TOKEN=k6-admin-token
+    command: >
+      run 
+      --out influxdb=http://influxdb:8086/k6-bucket
+      --out json=results/load-test-results.json
+      --tag testid=auth-load-test-100k
+      /scripts/main.js
+    depends_on:
+      - influxdb
+    networks:
+      - k6-network
+
+  # k6 Prometheus Remote Write (optional)
+  k6-prometheus:
+    image: grafana/k6:latest
+    container_name: k6-prometheus-test
+    profiles:
+      - prometheus-output
+    volumes:
+      - ./:/scripts
+      - ./results:/results
+    environment:
+      - BASE_URL=http://host.docker.internal:3000
+      - ENVIRONMENT=docker
+    command: >
+      run 
+      --out experimental-prometheus-rw
+      --tag testid=auth-load-test-100k
+      /scripts/main.js
+    depends_on:
+      - prometheus
+    networks:
+      - k6-network
+
+volumes:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:
+  prometheus-data:
+
+networks:
+  k6-network:
+    driver: bridge

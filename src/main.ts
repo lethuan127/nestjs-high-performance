@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { WinstonModule } from 'nest-winston';
 import { AppModule } from './app.module';
+import logger from './common/logger';
 import * as dotenv from 'dotenv';
 
 // Load environment variables
@@ -14,6 +16,7 @@ async function bootstrap(): Promise<void> {
         origin: true,
         credentials: true,
       },
+      logger: WinstonModule.createLogger({ instance: logger }),
     });
 
     // Enable global validation

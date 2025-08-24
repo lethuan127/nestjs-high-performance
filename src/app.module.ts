@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import dataSource from './config/typeorm.config';
 import configService from './config/config.service';
 import { DataSource } from 'typeorm';
+import LoggerMiddleware from './common/logger.middleware';
 
 @Module({
   imports: [
@@ -27,4 +28,8 @@ import { DataSource } from 'typeorm';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).exclude({ path: 'health', method: RequestMethod.ALL }).forRoutes('*');
+  }
+}

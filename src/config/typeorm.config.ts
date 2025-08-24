@@ -1,6 +1,9 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { User } from '../auth/user.entity';
 import configService from './config.service';
+import { join } from 'path';
+
+const entitiesPath = join(__dirname, '../**/*.entity.{ts,js}');
+const migrationsPath = join(__dirname, '../migrations/**/*.{ts,js}');
 
 const typeOrmConfig: DataSourceOptions = {
   type: 'postgres',
@@ -9,8 +12,8 @@ const typeOrmConfig: DataSourceOptions = {
   username: configService.get('POSTGRES_USER', 'postgres'),
   password: configService.get('POSTGRES_PASSWORD', 'password'),
   database: configService.get('POSTGRES_DATABASE', 'cake_system'),
-  entities: [User],
-  migrations: ['../migrations/*.{ts,js}'],
+  entities: [entitiesPath],
+  migrations: [migrationsPath],
   migrationsTableName: 'migrations',
   synchronize: false, // Always false for migrations
   logging: configService.get('NODE_ENV') === 'development',

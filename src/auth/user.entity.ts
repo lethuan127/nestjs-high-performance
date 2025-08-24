@@ -34,13 +34,13 @@ export class User {
   @Column({ type: 'date' })
   birthday: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ name: 'latest_login', type: 'timestamp', nullable: true })
   @IsOptional()
   latestLogin: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

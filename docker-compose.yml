@@ -43,6 +43,7 @@ services:
       JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
       JWT_EXPIRES_IN: 7d
       OTEL_EXPORTER_OTLP_GRPC_ENDPOINT: http://otel-collector:4317
+    command: sh -c 'npm run typeorm -- -d dist/config/typeorm.config.js migration:run && node --require ./dist/instrumentation.js dist/main'
     networks:
       - cake-network
       - common-net
@@ -61,6 +62,10 @@ services:
       start_period: 40s
     deploy:
       replicas: 3
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
     
   # Load Balancer for Backend Replicas
   nginx:

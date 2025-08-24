@@ -1,0 +1,42 @@
+{
+  "name": "k6-auth-load-test",
+  "version": "1.0.0",
+  "description": "k6 Load Test Suite for Authentication System - 100k Concurrent Users",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "test": "k6 run main.js",
+    "test:quick": "k6 run --vus 100 --duration 30s main.js",
+    "test:smoke": "k6 run --vus 10 --duration 10s main.js",
+    "test:stress": "k6 run scenarios.js",
+    "test:spike": "k6 run --stage 0:0s,5000:10s,5000:30s,0:10s scenarios.js",
+    "test:docker": "docker-compose -f docker-compose.k6.yml up --build",
+    "seed:users": "node seed-users.js",
+    "clean": "rm -rf results/* && mkdir -p results"
+  },
+  "keywords": [
+    "k6",
+    "load-testing",
+    "performance",
+    "authentication",
+    "stress-test",
+    "100k-users"
+  ],
+  "author": "Load Test Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/k6": "^0.48.0"
+  },
+  "engines": {
+    "k6": ">=0.47.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/cake-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/cake-system/issues"
+  },
+  "homepage": "https://github.com/yourusername/cake-system#readme"
+}
