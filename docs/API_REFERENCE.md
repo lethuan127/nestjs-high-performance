@@ -1022,8 +1022,3 @@ npm run test:e2e -- --testNamePattern="Auth endpoints"
 cd k6-load-test
 ./run-tests.sh --type mixed --url http://localhost:3000
 ```
-
----
-
-*Last Updated: January 2024*
-*Version: 1.0.0*

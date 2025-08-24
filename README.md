@@ -382,8 +382,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Caching with [Redis](https://redis.io/)
 - Load testing with [k6](https://k6.io/)
 - Monitoring with [OpenTelemetry](https://opentelemetry.io/)
-
----
-
-*Last Updated: January 2024*
-*Version: 1.0.0*

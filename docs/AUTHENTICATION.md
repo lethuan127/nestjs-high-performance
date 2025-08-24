@@ -408,7 +408,3 @@ Authentication endpoints are tested with the k6 load testing suite:
 3. **JWT Token Blacklisting**
 4. **Rate Limiting Implementation**
 
----
-
-*Last Updated: 24 Aug 2025*
-*Version: 1.0.0*
