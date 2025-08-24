@@ -18,6 +18,15 @@ const typeOrmConfig: DataSourceOptions = {
   synchronize: false, // Always false for migrations
   logging: configService.get('NODE_ENV') === 'development',
   ssl: configService.get('POSTGRES_SSL') ? { rejectUnauthorized: false } : false,
+  extra: {
+    // Connection pool configuration
+    max: 100, // Maximum connections
+    min: 20, // Minimum connections
+    acquireTimeoutMillis: 30000, // Connection acquisition timeout
+    idleTimeoutMillis: 30000, // Idle connection timeout
+    reapIntervalMillis: 1000, // Cleanup interval
+    createTimeoutMillis: 3000, // Connection creation timeout
+  },
 };
 
 export default new DataSource(typeOrmConfig);

@@ -184,6 +184,7 @@ describe('AuthService', () => {
       // Assert
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: [{ email: 'johndoe' }, { username: 'johndoe' }, { phone: 'johndoe' }],
+        select: ['id', 'fullname', 'email', 'username', 'phone', 'password'],
       });
       expect(mockedBcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword123');
       expect(userRepository.update).toHaveBeenCalledWith(mockUser.id, {
@@ -241,6 +242,7 @@ describe('AuthService', () => {
       expect(result).toEqual(mockUser);
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: [{ email: 'johndoe' }, { username: 'johndoe' }, { phone: 'johndoe' }],
+        select: ['id', 'fullname', 'email', 'username', 'phone', 'password'],
       });
       expect(mockedBcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword123');
     });
@@ -263,33 +265,6 @@ describe('AuthService', () => {
 
       // Act
       const result = await service.validateUser('johndoe', 'wrongpassword');
-
-      // Assert
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('findUserById', () => {
-    it('should return user when found', async () => {
-      // Arrange
-      userRepository.findOne.mockResolvedValue(mockUser);
-
-      // Act
-      const result = await service.findUserById(mockUser.id);
-
-      // Assert
-      expect(result).toEqual(mockUser);
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: mockUser.id },
-      });
-    });
-
-    it('should return null when user not found', async () => {
-      // Arrange
-      userRepository.findOne.mockResolvedValue(null);
-
-      // Act
-      const result = await service.findUserById('non-existent-id');
 
       // Assert
       expect(result).toBeNull();

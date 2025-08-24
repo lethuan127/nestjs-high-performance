@@ -24,6 +24,9 @@ const envSchema = {
 
   OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: url({ default: '' }),
   OTEL_EXPORTER_OTLP_GRPC_ENDPOINT: url({ default: '' }),
+
+  REDIS_URL: str(),
+  REDIS_TTL: num({ default: 3600 }),
 } as const;
 
 type Env = CleanedEnv<typeof envSchema>;

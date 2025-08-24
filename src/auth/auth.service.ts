@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { AuthResponseDto, UserResponseDto } from './dto/auth-response.dto';
+import { AuthResponseDto } from './dto/auth-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -124,6 +124,7 @@ export class AuthService {
     // Find user by email, username, or phone
     const user = await this.userRepository.findOne({
       where: [{ email: account }, { username: account }, { phone: account }],
+      select: ['id', 'fullname', 'email', 'username', 'phone', 'password'],
     });
 
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -131,14 +132,6 @@ export class AuthService {
     }
 
     return null;
-  }
-
-  async findUserById(id: string): Promise<UserResponseDto | null> {
-    const user = await this.userRepository.findOne({
-      where: { id },
-    });
-
-    return user;
   }
 
   generateAccessToken(payload: AuthUser): string {

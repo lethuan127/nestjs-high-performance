@@ -101,27 +101,6 @@ async function seedUsersBatch(client, startIndex, batchSize) {
   await client.query(insertQuery, values);
 }
 
-async function createIndexes(client) {
-  console.log('Creating performance indexes...');
-  
-  const indexes = [
-    'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_username ON users(username)',
-    'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_email ON users(email)',
-    'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_phone ON users(phone)',
-    'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_latest_login ON users(latest_login)'
-  ];
-  
-  for (const indexQuery of indexes) {
-    try {
-      await client.query(indexQuery);
-    } catch (error) {
-      console.warn(`Index creation warning: ${error.message}`);
-    }
-  }
-  
-  console.log('Indexes created/verified');
-}
-
 async function seedUsers() {
   const startTime = Date.now();
   console.log(`Starting to seed ${TOTAL_USERS.toLocaleString()} users...`);
@@ -164,9 +143,6 @@ async function seedUsers() {
     // Commit transaction
     await client.query('COMMIT');
     console.log('Transaction committed');
-    
-    // Create indexes for performance
-    await createIndexes(client);
     
     // Analyze tables for query optimization
     await client.query('ANALYZE users');

@@ -1,5 +1,6 @@
-import { Controller, Post, Body, UseGuards, Get, Request, ValidationPipe, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Request, ValidationPipe, HttpCode, HttpStatus, UnauthorizedException, Header } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { UserService } from './user.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthResponseDto, UserResponseDto } from './dto/auth-response.dto';
@@ -8,7 +9,10 @@ import type { FastifyRequest } from 'fastify';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -23,9 +27,10 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Header('Cache-Control', 'private, max-age=300') // 5 minutes
   @Get('profile')
   async getProfile(@Request() req: FastifyRequest): Promise<UserResponseDto> {
-    const user = await this.authService.findUserById(req.user!.sub);
+    const user = await this.userService.findUserById(req.user!.sub);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }

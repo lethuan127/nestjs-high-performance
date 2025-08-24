@@ -2,9 +2,17 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, MinLength } from 'class-validator';
 
 @Entity('users')
-@Index('idx_user_email', ['email'], { unique: true })
-@Index('idx_user_username', ['username'], { unique: true })
-@Index('idx_user_phone', ['phone'], { unique: true })
+// Unique indexes for authentication fields
+@Index('idx_users_email', ['email'], { unique: true })
+@Index('idx_users_username', ['username'], { unique: true })
+@Index('idx_users_phone', ['phone'], { unique: true })
+// Hash indexes for exact matches (faster than B-tree for equality)
+@Index('idx_users_email_hash', { synchronize: false }) // CREATE UNIQUE INDEX "idx_user_email" ON "users" USING HASH (email)
+@Index('idx_users_username_hash', { synchronize: false }) // CREATE UNIQUE INDEX "idx_user_username" ON "users" USING HASH (username)
+@Index('idx_users_phone_hash', { synchronize: false }) // CREATE UNIQUE INDEX "idx_user_phone" ON "users" USING HASH (phone)
+// Composite indexes for common queries
+@Index('idx_users_created_at', ['createdAt'])
+@Index('idx_users_latest_login', ['latestLogin'])
 export class User {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: string; // bigint

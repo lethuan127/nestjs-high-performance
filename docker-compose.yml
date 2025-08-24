@@ -21,6 +21,23 @@ services:
       timeout: 5s
       retries: 5
 
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: cake-system-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - cake-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # NestJS Application
   app:
     build:
@@ -42,6 +59,7 @@ services:
       POSTGRES_SSL: false
       JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
       JWT_EXPIRES_IN: 7d
+      REDIS_URL: redis://redis:6379/0
       OTEL_EXPORTER_OTLP_GRPC_ENDPOINT: http://otel-collector:4317
     command: sh -c 'npm run typeorm -- -d dist/config/typeorm.config.js migration:run && node --require ./dist/instrumentation.js dist/main'
     networks:
@@ -49,6 +67,8 @@ services:
       - common-net
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test:
@@ -66,6 +86,9 @@ services:
         limits:
           cpus: '2.0'
           memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
     
   # Load Balancer for Backend Replicas
   nginx:
@@ -97,6 +120,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:
