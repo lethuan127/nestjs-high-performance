@@ -19,13 +19,18 @@ const typeOrmConfig: DataSourceOptions = {
   logging: configService.get('NODE_ENV') === 'development',
   ssl: configService.get('POSTGRES_SSL') ? { rejectUnauthorized: false } : false,
   extra: {
-    // Connection pool configuration
-    max: 100, // Maximum connections
-    min: 20, // Minimum connections
+    // Connection pool configuration optimized for 3 replicas
+    max: 80, // Maximum connections per replica (3 replicas × 80 = 240 < 400 max_connections)
+    min: 10, // Minimum connections per replica
     acquireTimeoutMillis: 30000, // Connection acquisition timeout
     idleTimeoutMillis: 30000, // Idle connection timeout
     reapIntervalMillis: 1000, // Cleanup interval
     createTimeoutMillis: 3000, // Connection creation timeout
+    // Additional pool settings for better connection management
+    evictionRunIntervalMillis: 10000, // Run eviction every 10 seconds
+    numTestsPerEvictionRun: 3, // Test 3 connections per eviction run
+    softIdleTimeoutMillis: 20000, // Soft idle timeout
+    testOnBorrow: true, // Validate connections when borrowing
   },
 };
 

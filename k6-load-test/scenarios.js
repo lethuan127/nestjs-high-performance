@@ -42,6 +42,8 @@ export default function() {
 
 // Scenario 1: Mixed authentication load test
 export function mixedAuthTest() {
+  // Random sleep between 1-5 seconds to simulate real user behavior
+  sleep(Math.random() * 4 + 1);
   const testType = Math.random();
   
   if (testType < 0.7) {
@@ -54,9 +56,6 @@ export function mixedAuthTest() {
     // 10% profile access tests
     profileFlow();
   }
-  
-  // Random sleep between 1-5 seconds to simulate real user behavior
-  sleep(Math.random() * 4 + 1);
 }
 
 // Scenario 2: Login stress test

@@ -4,6 +4,10 @@ import { ConfigService } from '@nestjs/config';
 export const createQueueConfig = (configService: ConfigService): BullRootModuleOptions => ({
   connection: {
     url: configService.get('REDIS_URL'),
+    // Optimize Redis connection for high throughput
+    maxRetriesPerRequest: 3,
+    retryDelayOnFailover: 100,
+    enableReadyCheck: false,
   },
   defaultJobOptions: {
     removeOnComplete: 100, // Keep last 100 completed jobs

@@ -24,32 +24,20 @@ export class AuthService {
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
     const { fullname, phone, email, username, password, birthday } = registerDto;
 
-    if (username) {
-      const existingUser = await this.userRepository.findOne({
-        where: { username },
-      });
+    // Single query to check all unique constraints at once
+    const existingUser = await this.userRepository.findOne({
+      where: [...(username ? [{ username }] : []), ...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
+      select: ['id', 'username', 'email', 'phone'],
+    });
 
-      if (existingUser) {
+    if (existingUser) {
+      if (existingUser.username === username) {
         throw new ConflictException('Username already exists');
       }
-    }
-
-    if (email) {
-      const existingUser = await this.userRepository.findOne({
-        where: { email },
-      });
-
-      if (existingUser) {
+      if (existingUser.email === email) {
         throw new ConflictException('Email already exists');
       }
-    }
-
-    if (phone) {
-      const existingUser = await this.userRepository.findOne({
-        where: { phone },
-      });
-
-      if (existingUser) {
+      if (existingUser.phone === phone) {
         throw new ConflictException('Phone number already exists');
       }
     }
