@@ -7,6 +7,11 @@ import fastifyCompress from '@fastify/compress';
 import logger from './common/logger';
 import * as dotenv from 'dotenv';
 
+import * as os from 'os';
+process.env.UV_THREADPOOL_SIZE = `${os.cpus().length}`;
+
+console.log(`Setting UV_THREADPOOL_SIZE to ${os.cpus().length}`);
+
 // Load environment variables
 dotenv.config();
 

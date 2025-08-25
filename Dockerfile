@@ -46,4 +46,7 @@ USER nestjs
 
 EXPOSE 3000
 
+# Set UV thread pool size for better I/O performance
+ENV UV_THREADPOOL_SIZE=8
+
 CMD ["node", "--require", "./dist/instrumentation.js", "dist/main"]

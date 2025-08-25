@@ -65,6 +65,7 @@ services:
       PORT: 3000
       DEBUG: false
       LOG_LEVEL: info
+      UV_THREADPOOL_SIZE: 8
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_USER: postgres
