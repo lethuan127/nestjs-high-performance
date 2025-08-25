@@ -39,7 +39,7 @@ A high-performance, scalable NestJS application featuring JWT authentication, pr
 
 ## 📋 Prerequisites
 
-- **Node.js**: 20.x or higher
+- **Node.js**: 24.x or higher
 - **pnpm**: 8.x or higher (preferred package manager)
 - **Docker**: 24.x or higher
 - **Docker Compose**: 2.x or higher

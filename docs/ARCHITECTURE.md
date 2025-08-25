@@ -215,7 +215,7 @@ sequenceDiagram
 
 ### Runtime & Framework
 ```yaml
-Runtime: Node.js 20.x (LTS)
+Runtime: Node.js 24.x
 Framework: NestJS 11.x
 HTTP Server: Fastify 5.x
 Language: TypeScript 5.x

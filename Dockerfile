@@ -1,5 +1,5 @@
-# Use Node.js 20 Alpine as base image
-FROM node:20-alpine AS base
+# Use Node.js 24 Alpine as base image
+FROM node:24-alpine AS base
 
 # Install pnpm globally
 RUN npm install -g pnpm
@@ -24,7 +24,7 @@ COPY . .
 RUN pnpm run build
 
 # Production stage
-FROM node:20-alpine AS production
+FROM node:24-alpine AS production
 RUN npm install -g pnpm
 
 WORKDIR /app

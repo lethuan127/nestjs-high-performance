@@ -59,7 +59,7 @@ This guide provides comprehensive instructions for deploying the Cake System in 
 
 ### Prerequisites
 
-- **Node.js**: 20.x or higher
+- **Node.js**: 24.x or higher
 - **pnpm**: 8.x or higher
 - **Docker**: 24.x or higher
 - **Docker Compose**: 2.x or higher
@@ -1159,7 +1159,7 @@ postgres-replica:
 
 ```bash
 # Update base images
-docker pull node:20-alpine
+docker pull node:24-alpine
 docker pull postgres:16-alpine
 docker pull redis:7-alpine
 docker pull nginx:alpine

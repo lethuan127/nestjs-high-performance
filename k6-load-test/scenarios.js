@@ -54,7 +54,7 @@ export function healthCheck() {
 // Scenario 1: Mixed authentication load test
 export function mixedAuthTest() {
   // Random sleep between 1-5 seconds to simulate real user behavior
-  sleep(Math.random() * 50 + 1);
+  sleep(Math.random() * 4 + 1);
   const testType = Math.random();
   
   if (testType < 0.7) {
