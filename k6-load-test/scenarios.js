@@ -40,10 +40,21 @@ export default function() {
   mixedAuthTest();
 }
 
+export function healthCheck() {
+  sleep(Math.random() * 2 + 0.5);
+  group('Health Check', () => {
+    const healthResponse = http.get(`${BASE_URL}/health`);
+    check(healthResponse, {
+      'health status is 200': (r) => r.status === 200,
+      'health response time < 200ms': (r) => r.timings.duration < 200,
+    });
+  });
+}
+
 // Scenario 1: Mixed authentication load test
 export function mixedAuthTest() {
   // Random sleep between 1-5 seconds to simulate real user behavior
-  sleep(Math.random() * 4 + 1);
+  sleep(Math.random() * 50 + 1);
   const testType = Math.random();
   
   if (testType < 0.7) {

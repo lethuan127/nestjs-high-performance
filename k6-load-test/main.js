@@ -2,7 +2,7 @@
 // Authentication System Load Test
 
 import { config } from './config.js';
-import { mixedAuthTest, loginStressTest, registrationBurstTest, setup, teardown } from './scenarios.js';
+import { mixedAuthTest, healthCheck, loginStressTest, registrationBurstTest, setup, teardown } from './scenarios.js';
 import { handleSummary, startRealTimeMonitoring, stopRealTimeMonitoring } from './monitoring.js';
 
 // Export k6 configuration
